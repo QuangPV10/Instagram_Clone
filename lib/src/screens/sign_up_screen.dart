@@ -88,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                       child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(), onPressed: () {}, child: const Text('Log In')),
+                          style: ElevatedButton.styleFrom(), onPressed: () {}, child: const Text('Sign Up')),
                     ),
                   ],
                 ),
@@ -101,12 +101,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Don't have an account?",
+                      "Already have an account?",
                     ),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.of(context).pop(),
                         child: const Text(
-                          'Sign Up',
+                          'Log In',
                           textAlign: TextAlign.end,
                           style: TextStyle(color: Colors.white),
                         ))
