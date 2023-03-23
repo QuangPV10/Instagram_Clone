@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone/src/resources/auth_methods.dart';
 import 'package:instagram_clone/src/share/constant.dart';
+import 'package:instagram_clone/src/utils/utils.dart';
 import 'package:instagram_clone/src/widgets/text_field_input.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -15,6 +19,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
+  Uint8List? image;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,19 +47,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     Stack(
                       children: [
-                        Container(
-                          height: 120,
-                          width: 120,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  image: NetworkImage('https://i.stack.imgur.com/l60Hf.png'), fit: BoxFit.cover)),
-                        ),
+                        image != null
+                            ? Container(
+                                height: 120,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(image: MemoryImage(image!), fit: BoxFit.cover)),
+                              )
+                            : Container(
+                                height: 120,
+                                width: 120,
+                                decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: NetworkImage('https://i.stack.imgur.com/l60Hf.png'), fit: BoxFit.cover)),
+                              ),
                         Positioned(
                           bottom: -10,
                           left: 70,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: selectImage,
                             icon: const Icon(
                               Icons.add_a_photo,
                             ),
@@ -88,7 +102,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                       child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(), onPressed: () {}, child: const Text('Sign Up')),
+                          style: ElevatedButton.styleFrom(),
+                          onPressed: signupUser,
+                          child: isLoading
+                              ? const Center(
+                                  child: SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ))
+                              : const Text('Sign Up')),
                     ),
                   ],
                 ),
@@ -118,5 +143,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       )),
     );
+  }
+
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    setState(() {
+      image = im;
+    });
+  }
+
+  void signupUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final res = await AuthMethod().signUpUser(
+        username: _usernameController.text,
+        file: image!,
+        email: _emailController.text,
+        password: _passwordController.text,
+        bio: _bioController.text);
+
+    if (res != 'success') {
+      showSnackBar(context, res);
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+
+    clearEditTextingController();
+  }
+
+  void clearEditTextingController() {
+    _bioController.clear();
+    _usernameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    image = null;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bioController.dispose();
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
   }
 }
