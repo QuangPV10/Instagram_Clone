@@ -1,1 +1,1 @@
-const webScrenSize = 600;
+const webScrenSize = 400;

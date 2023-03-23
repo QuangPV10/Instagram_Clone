@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_clone/src/resources/auth_methods.dart';
 import 'package:instagram_clone/src/screens/sign_up_screen.dart';
 import 'package:instagram_clone/src/share/constant.dart';
+import 'package:instagram_clone/src/utils/utils.dart';
 import 'package:instagram_clone/src/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +16,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  void loginUser() async {
+    String res = await AuthMethod().signInUser(email: _emailController.text, password: _passwordController.text);
+
+    if (res != 'success') {
+      showSnackBar(context, res);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                       child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(), onPressed: () {}, child: const Text('Log In')),
+                          style: ElevatedButton.styleFrom(), onPressed: loginUser, child: const Text('Log In')),
                     ),
                   ],
                 ),
