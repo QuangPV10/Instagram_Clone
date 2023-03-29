@@ -5,7 +5,6 @@ import 'package:instagram_clone/src/providers/user_provider.dart';
 import 'package:instagram_clone/src/share/constant.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/add_post_screen.dart';
 import '../utils/global_variable.dart';
 
 class MobileScreenLayout extends StatefulWidget {

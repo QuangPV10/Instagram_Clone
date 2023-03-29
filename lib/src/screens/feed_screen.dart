@@ -25,7 +25,7 @@ class _FeedScreenState extends State<FeedScreen> {
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.messenger_outline))],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+        stream: FirebaseFirestore.instance.collection('posts').orderBy('datePublished', descending: true).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
