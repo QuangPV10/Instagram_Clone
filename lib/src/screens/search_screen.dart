@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_clone/src/screens/profile_screen.dart';
 import 'package:instagram_clone/src/share/constant.dart';
-
-import '../utils/global_variable.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -54,11 +52,16 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemCount: (snapshot.data! as dynamic).docs.length,
                     itemBuilder: (context, index) {
                       final user = (snapshot.data! as dynamic).docs[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(user['photoUrl']),
+                      return InkWell(
+                        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ProfileScreen(uid: user['uid']),
+                        )),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(user['photoUrl']),
+                          ),
+                          title: Text(user['username']),
                         ),
-                        title: Text(user['username']),
                       );
                     },
                   );
